@@ -80,17 +80,27 @@ async function getRecipes() {
   //            function (we call these callback functions). That function will
   //            take two parameters - resolve, and reject. These are functions
   //            you can call to either resolve the Promise or Reject it.
-  const myPromise = new Promise(async (resolve, reject)=> {
-    for(let url in RECIPE_URLS) {
+  const myPromise = new Promise( async function(resolve, reject){
       try{
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-      }
-      catch{
 
+        for(let i = 0; i < RECIPE_URLS.length; i++){
+
+          const response = await fetch(RECIPE_URLS[i]);
+          const recipe = await response.json();
+          console.log(recipe);
+          netwWorkRecipes.push(recipe);
+        }
+      
+
+        saveRecipesToStorage(netwWorkRecipes);
+        resolve(netwWorkRecipes);
       }
-    }
+      catch(error){
+        reject(error);
+      }
+  
+
+
   })
   
 
