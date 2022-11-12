@@ -140,6 +140,7 @@ async function getRecipes() {
         resolve(netwWorkRecipes);
       }
       catch(error){
+        console.error(error);
         reject(error);
       }
   

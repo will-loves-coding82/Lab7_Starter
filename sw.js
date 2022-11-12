@@ -45,10 +45,10 @@ self.addEventListener('fetch', function (event) {
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
 
-  event.respondWith(caches.open(CACHE_NAME).then((cache) => {
+  event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
 
     // Check the cache first
-    return cache.match(event.request).then((cachedResponse) => {
+    return await cache.match(event.request).then((cachedResponse) => {
       // Return a cached response if it exists
       if (cachedResponse) {
         return cachedResponse;
