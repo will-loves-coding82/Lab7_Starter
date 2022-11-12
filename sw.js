@@ -45,15 +45,18 @@ self.addEventListener('fetch', function (event) {
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
 
-  event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
+  
 
-    // Check the cache first
-    return await cache.match(event.request).then((cachedResponse) => {
-      // Return a cached response if it exists
+    // Prevent the default, and handle the request ourselves.
+    event.respondWith((async () => {
+      // Try to get the response from a cache.
+      const cachedResponse = await caches.match(event.request);
+      // Return it if we found one.
       if (cachedResponse) {
         return cachedResponse;
       }
 
+      // If we didn't find a match in the cache, use the network.
       // Otherwise, fetch the resource
       return fetch(event.request).then((fetchedResponse) => {
         // Add the network response to the cache for later visits
@@ -61,8 +64,8 @@ self.addEventListener('fetch', function (event) {
 
         // Return the network response
         return fetchedResponse;
-      });
     });
+
   }));
   
 });
