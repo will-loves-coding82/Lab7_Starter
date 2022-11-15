@@ -39,33 +39,29 @@ self.addEventListener('fetch', function (event) {
   //       fetch(event.request)
   // https://developer.chrome.com/docs/workbox/caching-strategies-overview/
   /*******************************/
+
   // B7. TODO - Respond to the event by opening the cache using the name we gave
   //            above (CACHE_NAME)
-  // B8. TODO - If the request is in the cache, return with the cached version.
-  //            Otherwise fetch the resource, add it to the cache, and return
-  //            network response.
+  event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
 
-  
+    // Try to get the response from a cache.
+    const cachedResponse = await cache.match(event.request);
 
-    // Prevent the default, and handle the request ourselves.
-    event.respondWith((async () => {
-      // Try to get the response from a cache.
-      const cachedResponse = await caches.match(event.request);
-      // Return it if we found one.
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+    // Return the response if we found one.
+    if (cachedResponse) {
+      return cachedResponse;
+    }
 
-      // If we didn't find a match in the cache, use the network.
-      // Otherwise, fetch the resource
-      return fetch(event.request).then((fetchedResponse) => {
-        // Add the network response to the cache for later visits
-        cache.put(event.request, fetchedResponse.clone());
+    // B8. TODO - If the request is in the cache, return with the cached version.
+    //            Otherwise fetch the resource, add it to the cache, and return
+    //            network response.
+    return fetch(event.request).then((fetchedResponse) => {
+      cache.put(event.request, fetchedResponse.clone());
 
-        // Return the network response
-        return fetchedResponse;
+      // Return the network response
+      return fetchedResponse;
     });
 
   }));
-  
+
 });
