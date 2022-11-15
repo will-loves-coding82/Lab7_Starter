@@ -48,9 +48,10 @@ self.addEventListener('fetch', function (event) {
   
 
     // Prevent the default, and handle the request ourselves.
-    event.respondWith((async () => {
+    event.respondWith(caches.open(CACHE_NAME).then( async (cache) => {
+      
       // Try to get the response from a cache.
-      const cachedResponse = await caches.match(event.request);
+      const cachedResponse = await cache.match(event.request);
       // Return it if we found one.
       if (cachedResponse) {
         return cachedResponse;
